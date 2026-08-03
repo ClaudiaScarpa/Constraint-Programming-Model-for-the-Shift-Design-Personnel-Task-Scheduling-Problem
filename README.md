@@ -113,11 +113,10 @@ The model handles:
 
 - minimum and maximum shift duration;
 - continuous working periods;
-- mandatory meal breaks;
+- mandatory breaks;
 - rest intervals;
 - employee availability windows;
-- valid start and end times.
-
+- 
 ---
 
 ## Task Assignment Constraints
@@ -173,7 +172,7 @@ The model performs preprocessing operations to remove impossible assignments bef
 │   ├── input.py
 │   │   └── CSV parsing and preprocessing pipeline
 │   │
-│   ├── solver.py
+│   ├── EmployeeSolver.py
 │   │   └── CP-SAT model construction and lexicographic optimization
 │   │
 │   └── output.py
@@ -233,7 +232,6 @@ For each employee:
 - working periods;
 - breaks;
 - assigned activities;
-- idle intervals.
 
 ## Global KPIs
 
