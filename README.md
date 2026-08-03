@@ -48,7 +48,7 @@ The model uses a **three-stage lexicographic optimization strategy**.
 
 Instead of combining objectives through weighted sums, objectives are optimized sequentially, guaranteeing that higher-priority goals are never sacrificed for lower-priority ones.
 
-## Stage 1 — Unmet Demand Minimization
+## Stage 1: Unmet Demand Minimization
 
 The first optimization stage minimizes uncovered task requirements.
 
@@ -60,19 +60,26 @@ This ensures that operational requirements are satisfied as much as possible.
 
 ---
 
-## Stage 2 — Employee Preference Maximization
+## Stage 2: Employee Preference Minimization
 
-After fixing the optimal demand coverage, the model maximizes employee satisfaction by considering activity preferences.
+After achieving the optimal demand coverage, the second optimization stage minimizes the assignment cost associated with employee activity preferences.
+
+Employee preferences are represented as non-negative values, where:
+
+- **0** indicates the employee's most preferred activity;
+- larger values represent less preferred assignments.
+
+The objective is therefore formulated as:
 
 \[
-\max \sum \text{Preference Scores}
+\min \sum \text{Preference Cost}
 \]
 
-This stage improves schedule quality without worsening demand coverage.
+This stage improves employee satisfaction by minimizing the total preference penalty while preserving the optimal demand coverage obtained in the first stage.
 
 ---
 
-## Stage 3 — Idle Time Minimization
+## Stage 3: Idle Time Minimization
 
 Finally, the model minimizes unnecessary idle periods inside employee shifts.
 
