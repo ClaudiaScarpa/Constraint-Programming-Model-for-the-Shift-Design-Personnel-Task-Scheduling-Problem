@@ -1,27 +1,255 @@
-## Constraint Programming Model for the Shift-Design Personnel Task Scheduling Problem
+# Constraint Programming Model for the Shift-Design Personnel Task Scheduling Problem
 
-This repository contains the work developed for my Master's thesis in Mathematics at the University of Bologna:
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![OR-Tools](https://img.shields.io/badge/OR--Tools-CP--SAT-orange.svg)](https://developers.google.com/optimization)
+[![Pydantic V2](https://img.shields.io/badge/Pydantic-V2-red.svg)](https://docs.pydantic.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**"Constraint Programming Model for the Shift-Design Personnel Task Scheduling Problem"**
+This repository contains the complete implementation and computational artifacts developed for my Master's Thesis in Mathematics at the **University of Bologna**:
 
-The thesis investigates the application of **Constraint Programming (CP)**, using **Google OR-Tools CP-SAT**, to solve an industrial workforce scheduling problem involving integrated shift design and task assignment. The proposed approach is compared against an existing Mixed-Integer Linear Programming (MILP) formulation on realistic benchmark instances.
+> **"Constraint Programming Model for the Shift-Design Personnel Task Scheduling Problem"**
 
-## Repository contents
+The project develops a **Constraint Programming optimization model** for an integrated workforce scheduling problem that combines:
 
-Currently, this repository includes:
+- **Shift design:** determining employee working intervals, rest periods, and mandatory breaks.
+- **Personnel task scheduling:** assigning employees to activities while respecting skills, availability, preferences, and operational requirements.
 
-* 📄 The complete Master's thesis (PDF).
+The proposed model is implemented using **Google OR-Tools CP-SAT** and adopts a **three-stage lexicographic optimization approach** to handle conflicting objectives.
 
-The implementation of the CP model will be published soon.
+---
 
-## Code availability
+# 📌 Problem Description
 
-The Python source code is currently being reviewed before publication. I am waiting for authorization from the company involved in the project and, in the meantime, I am removing all proprietary and sensitive business data to ensure that only anonymized and shareable material is released.
+Personnel scheduling problems are challenging combinatorial optimization problems arising in many real-world environments, such as manufacturing, logistics, healthcare, and service industries.
 
-Once this process is complete, the repository will be updated with:
+This project focuses on an integrated version of the problem where both **employee shifts** and **task assignments** must be optimized simultaneously.
 
-* Python implementation of the CP-SAT model
-* Example datasets (anonymized)
-* Instructions for reproducing the experiments
+Given:
 
-Thank you for your patience!
+- a set of employees with individual characteristics;
+- a set of tasks with time-dependent requirements;
+- employee skills and activity preferences;
+- working-time regulations and scheduling constraints;
+
+the goal is to construct feasible daily schedules satisfying operational demand while optimizing multiple objectives.
+
+The model simultaneously determines:
+
+1. **When employees work**
+2. **Which tasks employees perform**
+3. **How breaks and idle periods are distributed**
+4. **How employee preferences are respected**
+
+---
+
+# 🎯 Optimization Framework
+
+The model uses a **three-stage lexicographic optimization strategy**.
+
+Instead of combining objectives through weighted sums, objectives are optimized sequentially, guaranteeing that higher-priority goals are never sacrificed for lower-priority ones.
+
+## Stage 1 — Unmet Demand Minimization
+
+The first optimization stage minimizes uncovered task requirements.
+
+\[
+\min \sum \text{Unmet Demand}
+\]
+
+This ensures that operational requirements are satisfied as much as possible.
+
+---
+
+## Stage 2 — Employee Preference Maximization
+
+After fixing the optimal demand coverage, the model maximizes employee satisfaction by considering activity preferences.
+
+\[
+\max \sum \text{Preference Scores}
+\]
+
+This stage improves schedule quality without worsening demand coverage.
+
+---
+
+## Stage 3 — Idle Time Minimization
+
+Finally, the model minimizes unnecessary idle periods inside employee shifts.
+
+\[
+\min \sum \text{Idle Time}
+\]
+
+This produces more compact and efficient schedules.
+
+---
+
+# ⚙️ Technical Features
+
+## Constraint Programming Model
+
+The optimization model is built using:
+
+- **Google OR-Tools CP-SAT Solver**
+- Boolean decision variables
+- Integer linear constraints
+- Reified logical constraints
+- Interval-based scheduling constraints
+
+The model exploits CP-SAT propagation capabilities to efficiently explore the solution space.
+
+---
+
+## Shift Design Constraints
+
+The model handles:
+
+- minimum and maximum shift duration;
+- continuous working periods;
+- mandatory meal breaks;
+- rest intervals;
+- employee availability windows;
+- valid start and end times.
+
+---
+
+## Task Assignment Constraints
+
+The scheduling model includes:
+
+- employee-task compatibility;
+- skill requirements;
+- activity coverage;
+- assignment consistency;
+- preference-based decisions.
+
+---
+
+## Advanced Model Improvements
+
+To improve computational performance, the implementation includes:
+
+### Global Capacity Cuts
+
+Redundant but useful constraints limiting the total available workforce capacity over time.
+
+These constraints strengthen propagation and reduce unnecessary search.
+
+---
+
+### Effective Duration Lower Bounds
+
+Additional lower bounds on employee activity durations reduce the feasible domain and accelerate convergence.
+
+---
+
+### Domain Pruning
+
+The model performs preprocessing operations to remove impossible assignments before optimization.
+
+---
+
+# 🏗️ Repository Structure
+
+```
+.
+├── data_io/
+│   └── anonymized benchmark input datasets
+│
+├── src/
+│   ├── constants.py
+│   │   └── global scheduling parameters and time discretization
+│   │
+│   ├── data_classes.py
+│   │   └── Pydantic V2 models for employees, activities, and instances
+│   │
+│   ├── input.py
+│   │   └── CSV parsing and preprocessing pipeline
+│   │
+│   ├── solver.py
+│   │   └── CP-SAT model construction and lexicographic optimization
+│   │
+│   └── output.py
+│       └── solution export and KPI computation
+│
+├── tests/
+│   └── automated validation and unit tests
+│
+├── main.py
+│   └── application entry point
+│
+├── requirements.txt
+│
+├── .gitignore
+│
+└── README.md
+```
+
+---
+
+# 📊 Input Data
+
+The model receives anonymized CSV datasets describing:
+
+## Employees
+
+Each employee is characterized by:
+
+- identifier;
+- availability;
+- skills;
+- activity preferences;
+- working-time constraints.
+
+## Activities
+
+Each activity contains:
+
+- required workforce;
+- execution interval;
+- required skills;
+- duration information.
+
+All input data is validated through strongly typed **Pydantic V2** models before being passed to the optimization engine.
+
+---
+
+# 📈 Output and Reporting
+
+The solution generates detailed reports including:
+
+## Employee Schedule
+
+For each employee:
+
+- assigned shift;
+- working periods;
+- breaks;
+- assigned activities;
+- idle intervals.
+
+## Global KPIs
+
+The reporting module computes:
+
+- total unmet demand;
+- preference satisfaction score;
+- total idle time;
+- shift utilization statistics.
+
+## Visualization
+
+The repository includes automatic generation of:
+
+- convergence plots;
+- scheduling summaries;
+- Excel reports.
+
+# 🔮 Future Developments
+
+Possible extensions include:
+
+- larger benchmark instances;
+- comparison with alternative optimization approaches;
+- hybrid CP-MIP formulations;
+- additional fairness objectives among employees;
