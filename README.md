@@ -52,9 +52,9 @@ Instead of combining objectives through weighted sums, objectives are optimized 
 
 The first optimization stage minimizes uncovered task requirements.
 
-\[
+$$
 \min \sum \text{Unmet Demand}
-\]
+$$
 
 This ensures that operational requirements are satisfied as much as possible.
 
@@ -71,9 +71,9 @@ Employee preferences are represented as non-negative values, where:
 
 The objective is therefore formulated as:
 
-\[
+$$
 \min \sum \text{Preference Cost}
-\]
+$$
 
 This stage improves employee satisfaction by minimizing the total preference penalty while preserving the optimal demand coverage obtained in the first stage.
 
@@ -83,9 +83,9 @@ This stage improves employee satisfaction by minimizing the total preference pen
 
 Finally, the model minimizes unnecessary idle periods inside employee shifts.
 
-\[
+$$
 \min \sum \text{Idle Time}
-\]
+$$
 
 This produces more compact and efficient schedules.
 
