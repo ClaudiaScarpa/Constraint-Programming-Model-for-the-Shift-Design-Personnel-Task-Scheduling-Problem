@@ -1,0 +1,13 @@
+name,value
+useHeuristic,false
+priorityAggregationFunc,max
+maxHoursBeforeBreak,5
+minHoursAfterBreak,0
+forcedBreak,1
+maxBreaksInDay,2
+timestep,15
+optGap,0.01
+timeLimit,3600
+runMinChanges,false
+computeInitialSol,false
+operationalAllocationStep,15
